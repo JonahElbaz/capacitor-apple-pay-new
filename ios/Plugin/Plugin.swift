@@ -10,6 +10,7 @@ public class ApplePay: CAPPlugin, PKPaymentAuthorizationControllerDelegate {
     
     @objc func canMakePayments(_ call: CAPPluginCall) {
         var isPayment = false
+        print("Inside the plugin")
         
         if !call.hasOption("usingNetworks") {
             isPayment = PKPaymentAuthorizationViewController.canMakePayments()
@@ -308,40 +309,7 @@ public class ApplePay: CAPPlugin, PKPaymentAuthorizationControllerDelegate {
         if payment.token.paymentMethod.displayName != nil {
             paymentMethodDictionary["displayName"] = payment.token.paymentMethod.displayName ?? ""
         }
-        
-        if #available(iOS 13.4, *) {
-            if let secureElementPass = payment.token.paymentMethod.secureElementPass {
-                let secureElementPassDictionary: NSMutableDictionary = [
-                    "deviceAccountNumberSuffix": secureElementPass.deviceAccountNumberSuffix,
-                    "deviceAccountIdentifier": secureElementPass.deviceAccountIdentifier,
-                    "primaryAccountIdentifier": secureElementPass.primaryAccountIdentifier,
-                    "primaryAccountNumberSuffix": secureElementPass.primaryAccountNumberSuffix,
-                ]
-                
-                if secureElementPass.devicePassIdentifier != nil {
-                    secureElementPassDictionary["devicePassIdentifier"] = secureElementPass.devicePassIdentifier
-                }
-                
-                if secureElementPass.pairedTerminalIdentifier != nil {
-                    secureElementPassDictionary["pairedTerminalIdentifier"] = secureElementPass.pairedTerminalIdentifier
-                }
-                
-                paymentMethodDictionary["secureElementPass"] = secureElementPassDictionary;
-            }
-        }
-        
-        // TODO:
-//        let shippingContactDictionary: NSMutableDictionary = [:]
-//        if let shippingContact = payment.shippingContact {
-//            if shippingContact.emailAddress != nil {
-//                shippingContactDictionary["emailAddress"] = shippingContact.emailAddress
-//            }
-//
-//            if shippingContact.phoneNumber != nil {
-//                shippingContactDictionary["phoneNumber"] = shippingContact.phoneNumber
-//            }
-//        }
-        
+    
         self.savedCall?.resolve([
             "token": token,
 //            "shippingContact": shippingContactDictionary
